@@ -1,0 +1,11 @@
+# tibero adapter fragment. set-up-harness merges into project harness.toml.
+# Common DB policy lives in modules/db-mcp/harness.fragment.toml ([guard.db]).
+
+[guard]
+shell_block_patterns = [
+    'jaydebeapi',  # sample: python db_check.py --driver jaydebeapi
+    'TbDriver',  # sample: java -cp tibero6-jdbc.jar com.tmax.tibero.jdbc.TbDriver
+    'tibero:thin',  # sample: sqlline -u jdbc:tibero:thin:@dbhost:8629:dev
+    'TIBERO_PASSWORD',  # sample: echo $env:TIBERO_PASSWORD
+    'tibero-mcp-server',  # sample: type .agents\mcp-servers\tibero\tibero-mcp-server\src\tibero_mcp_server\server.py
+]

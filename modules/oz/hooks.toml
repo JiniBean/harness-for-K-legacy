@@ -1,0 +1,14 @@
+# oz module hook fragment. set-up-harness appends this to <project>/.agents/hooks/hooks.toml
+# (same [[hook]] schema; see the header there) and copies hooks/*.py into .agents/hooks/.
+# Not required/protected: the guard is advisory for binary report files and fails open.
+
+[[hook]]
+script = "oz_file_guard.py"
+args = ["--pretooluse"]
+events = ["file_write"]
+cursor_matcher = "Write|Delete|StrReplace|EditNotebook|ApplyPatch"
+fail_closed = false
+
+[[hook]]
+script = "oz_file_guard.py"
+events = ["after_file_edit"]

@@ -1,0 +1,17 @@
+# db-mcp module settings fragment. set-up-harness merges into project harness.toml.
+
+[guard]
+shell_block_patterns = [
+    'launch_[\w-]+\.py',  # sample: python .agents/mcp-servers/adapter/launch_dev.py
+    'credentials\.env',  # sample: cat ~/secrets/demo/credentials.env
+    'dml_approved\.json',  # sample: echo {} > .agents/hooks/state/dml_approved.json
+]
+
+[guard.db]
+approvals = { dev = "go", test = "gotest" }
+session_envs = ["dev"]
+session_ttl_sec = 600
+bundle_ttl_sec = 180
+bundle_max_writes = 10
+prod_envs = []
+prod_deny_keywords = ["INSERT", "MERGE", "CREATE"]

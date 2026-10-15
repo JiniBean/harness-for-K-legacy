@@ -1,0 +1,17 @@
+# db-mcp module hook fragment. set-up-harness appends to <project>/.agents/hooks/hooks.toml
+# MCP server names are db-<env>; envs = keys of harness.toml [guard.db] approvals.
+
+[[hook]]
+script = "db_mcp_guard.py"
+events = ["mcp"]
+claude_matcher = "mcp__db-[^_]+__execute_sql"
+fail_closed = true
+required = true
+protected = true
+protects = ["db_sql_policy.py"]
+
+[[hook]]
+script = "db_dml_approve.py"
+events = ["prompt_submit"]
+required = true
+protected = true

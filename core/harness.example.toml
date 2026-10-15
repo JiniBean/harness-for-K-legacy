@@ -1,0 +1,22 @@
+# 전역 하네스 설정 예시. ~/.agents/harness.toml 로 복사해 값을 채운다(이 파일 자체는 커밋하지 않는다).
+# 프로젝트 <프로젝트>/.agents/harness.toml 의 같은 키가 이 파일보다 우선한다.
+# 로더: ~/.agents/scripts/harness_config.py
+
+# 비밀 폴더 위치(선택). 사용자만 바꾼다. 기본 ~/.agents/secrets
+# secrets_dir = "D:/secure/agents-secrets"
+
+[harness]
+repo_dir = ""         # 이 하네스 저장소 클론 경로. 설치 스크립트가 기록, set-up-harness가 기능(modules/)을 여기서 읽음
+modules = []          # 전역에 설치한 기능 id (set-up-harness가 기록. 프로젝트 harness.toml의 같은 키가 덮음)
+
+[person]
+display_name = ""     # 플러그인·마켓플레이스 작성자 표시명
+github_user = ""
+author = ""           # 변경 이력 주석 작성자(comment-gen 기능)
+
+[tools]
+python = ""           # 훅 실행 Python 절대경로 (예: C:/Users/<사용자>/AppData/Local/Python/pythoncore-3.14-64/python.exe)
+
+# 프로젝트 설정 위치를 기본(<프로젝트>/.agents)에서 바꿀 때만
+# [projects."C:/path/to/project"]
+# harness_dir = "D:/elsewhere/.agents"

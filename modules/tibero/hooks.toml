@@ -1,0 +1,1 @@
+# tibero adapter: no hooks. SQL guard/approve live in modules/db-mcp/hooks.toml.

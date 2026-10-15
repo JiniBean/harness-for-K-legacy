@@ -1,0 +1,16 @@
+# log-debug module hook fragment. set-up-harness appends this to <project>/.agents/hooks/hooks.toml
+# (same [[hook]] schema; see the header there) and copies hooks/*.py into .agents/hooks/.
+# The guard itself passes non-FTP MCP calls, so a broad matcher is safe; set-up-harness
+# may narrow it to "mcp__<[guard.ftp] server_name>__.*".
+
+# Remote-FTP part only: when the user turns remote FTP off (MODULE.md 사용자 안내 1),
+# drop this entry and hooks/ftp_mcp_guard.py. "part" is ignored by gen_hook_configs.py
+# and hook_io.py (they read known keys only); it marks the entry for set-up-harness.
+[[hook]]
+script = "ftp_mcp_guard.py"
+part = "ftp"
+events = ["mcp"]
+claude_matcher = "mcp__.*ftp.*__.*"
+fail_closed = true
+required = true
+protected = true

@@ -1,0 +1,14 @@
+# jetbrains module hook fragment. set-up-harness appends this to <.agents>/hooks/hooks.toml of the
+# chosen scope (~/.agents or <project>/.agents; schema in modules/guards/hooks.toml) and copies
+# hooks/*.py into <.agents>/hooks/.
+# Cursor runs the guard for every MCP call; it passes tools outside its deny list, so the
+# broad matcher is safe. Claude Code plugin servers are named mcp__plugin_<plugin>_jetbrains__*,
+# a plain server mcp__jetbrains__*; the matcher covers both.
+
+[[hook]]
+script = "jetbrains_mcp_guard.py"
+events = ["mcp"]
+claude_matcher = "mcp__.*jetbrains.*__.*"
+fail_closed = true
+required = true
+protected = true

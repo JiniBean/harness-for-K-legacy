@@ -1,0 +1,12 @@
+# oz module settings fragment. set-up-harness merges these keys into the project
+# <project>/.agents/harness.toml (it appends shell_block_patterns to an existing [guard]
+# list instead of adding a second [guard] table). [guard] changes need a "gohook" turn.
+
+[guard]
+# Shell text writes (redirect, Set-Content/Out-File/Add-Content) onto .ozr/.odi corrupt the
+# binary header. Allowed only when the command runs python (rb/wb byte patch).
+# Each pattern keeps a trailing "# sample: <command it must block>" comment;
+# hooks/tests/test_fragment_patterns.py compiles every pattern and checks it matches its sample.
+shell_block_patterns = [
+    '''^(?![\s\S]*\bpython)[\s\S]*(?:>{1,2}\s*['"]?[^'"\s;|&<>]*|\b(?:set-content|out-file|add-content)\b[^\n;|]*)\.(?:ozr|odi)\b''',  # sample: Set-Content -Path src/main/ozRpt/A/a01_report.ozr -Value x
+]

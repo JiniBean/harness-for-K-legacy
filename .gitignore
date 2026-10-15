@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+# machine-only values: never commit
+harness.toml
+secrets/
+.agents/tmp/
+.env

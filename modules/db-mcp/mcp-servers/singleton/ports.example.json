@@ -1,0 +1,9 @@
+{
+  "bind": "127.0.0.1",
+  "python": "<venv Python 절대경로>",
+  "servers": {
+    "db-dev": { "port": 18761, "script": "../adapter/launch_dev.py", "wait_sec": 45 },
+    "db-test": { "port": 18762, "script": "../adapter/launch_test.py", "wait_sec": 45 },
+    "<프로젝트>-ftp": { "port": 18763, "script": "../ftp/server.py" }
+  }
+}

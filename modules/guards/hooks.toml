@@ -1,0 +1,54 @@
+# Tool-neutral hook registry for this project (canonical).
+# gen_hook_configs.py generates .cursor/hooks.json, the "hooks" key of
+# .claude/settings.json and .codex/hooks.json from this file. Edit here, then run:
+#   python .agents/hooks/gen_hook_configs.py            (all tools)
+#   python .agents/hooks/gen_hook_configs.py --check    (diff only)
+#   python .agents/hooks/gen_hook_configs.py --tools claude,codex
+#
+# set-up-harness appends each enabled module's modules/<m>/hooks.toml fragment
+# (same [[hook]] schema) below the core entries.
+#
+# Neutral events and how they map:
+#   session_start    Cursor sessionStart                | Claude SessionStart                        | Codex SessionStart
+#   prompt_submit    Cursor beforeSubmitPrompt          | Claude UserPromptSubmit                    | Codex UserPromptSubmit
+#   shell            Cursor beforeShellExecution        | Claude PreToolUse "Bash|PowerShell"        | Codex PreToolUse "^Bash$"
+#   file_write       Cursor preToolUse <cursor_matcher> | Claude PreToolUse "Write|Edit|NotebookEdit" | Codex PreToolUse "^apply_patch$"
+#   file_write_full  Cursor preToolUse "Write|ApplyPatch" | Claude PreToolUse "Write"                | Codex PreToolUse "^apply_patch$"
+#   after_file_edit  Cursor afterFileEdit               | Claude PostToolUse "Write|Edit|NotebookEdit" | Codex PostToolUse "apply_patch|Edit|Write"
+#   mcp              Cursor beforeMCPExecution (hook filters the server itself) | Claude/Codex PreToolUse <claude_matcher>
+#   file_read        Cursor beforeReadFile              | Claude PreToolUse "Read|Grep|Glob|NotebookRead" | Codex: none (skipped)
+#   shell_input      Cursor preToolUse "Shell" (hook may rewrite the command) | Claude PreToolUse "Bash|PowerShell" | Codex: none (skipped)
+#
+# Keys per hook:
+#   script, args (list), events (list)
+#   fail_closed     Cursor only; never applied to session_start
+#   cursor_matcher  file_write matcher override for Cursor
+#   claude_matcher  required for mcp (reused for Codex); for Claude it also overrides the
+#                   matcher of every other event of this hook (e.g. "PowerShell" for shell)
+#   only            "cursor" | "claude" | "codex", or a list of them: register for those tools only
+#   required        true: every generated registration must keep this guard;
+#                   protected_path_guard refuses hook-config edits that drop it
+#   protected       true: agents may edit this script only in a "gohook" turn
+#   protects        extra helper basenames protected together with this script
+#   part            optional sub-feature tag (e.g. "ftp"); set-up-harness drops the entry
+#                   when that part is off. Ignored by the generator
+# shell_guard.py and protected_path_guard.py are always required, and the core
+# scripts (hook_io, shell_guard, gen_hook_configs, protected_path_guard,
+# hook_edit_approve) are always protected, whatever this file says.
+
+[[hook]]
+script = "shell_guard.py"
+events = ["shell"]
+fail_closed = true
+required = true
+
+[[hook]]
+script = "hook_edit_approve.py"
+events = ["prompt_submit"]
+
+[[hook]]
+script = "protected_path_guard.py"
+events = ["file_write", "file_read"]
+cursor_matcher = "Write|Delete|StrReplace|EditNotebook|ApplyPatch"
+fail_closed = true
+required = true

@@ -1,0 +1,20 @@
+# windows-cp949 module hook fragment. set-up-harness appends this to <.agents>/hooks/hooks.toml of the
+# chosen scope (~/.agents or <project>/.agents; schema in modules/guards/hooks.toml) and copies
+# hooks/*.py into <.agents>/hooks/. PowerShell-only: Claude matcher "PowerShell", no Codex entry.
+# Encoding helpers, not security guards: fail open, not required.
+
+# Denies Hangul here-string writes (Set-Content/Out-File). Cursor beforeShellExecution.
+[[hook]]
+script = "shell_encoding_before.py"
+events = ["shell"]
+claude_matcher = "PowerShell"
+only = ["cursor", "claude"]
+fail_closed = false
+
+# Rewrites the command to prepend the UTF-8 console preamble. Cursor preToolUse "Shell".
+[[hook]]
+script = "shell_encoding_pretool.py"
+events = ["shell_input"]
+claude_matcher = "PowerShell"
+only = ["cursor", "claude"]
+fail_closed = false
