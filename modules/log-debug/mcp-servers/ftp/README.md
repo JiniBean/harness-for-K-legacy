@@ -47,9 +47,9 @@ interceptor = "<요청 시작 줄을 찍는 로거 클래스>"
 
 ## MCP 등록
 
-기본은 url 방식(공유 서버). 서버 프로세스 1개를 띄워 두고 모든 세션이 같이 쓴다. 절차·`ports.json` 형식은 `../singleton/README.md`. 이름은 `[guard.ftp] server_name`과 같게 쓴다.
+기본은 url 방식(공유 서버). 서버 프로세스 1개를 띄워 두고 모든 세션이 같이 쓴다. 절차·`ports.json` 형식은 `../daemon/README.md`. 이름은 `[guard.ftp] server_name`과 같게 쓴다.
 
-1. `singleton/ports.json`에 `"<프로젝트>-ftp": { "port": <포트>, "script": "../ftp/server.py" }`
+1. `daemon/ports.json`에 `"<프로젝트>-ftp": { "port": <포트>, "script": "../ftp/server.py" }`
 2. 프로젝트 `.agents/mcp.json`(정본. `.mcp.json`·`.cursor/mcp.json`은 링크)에 추가
 
 ```json
@@ -75,7 +75,7 @@ interceptor = "<요청 시작 줄을 찍는 로거 클래스>"
 
 의존성: `python -m pip install -r .agents/mcp-servers/ftp/requirements.txt`. `mcp`는 1.x만 쓴다(`mcp>=2`는 API 비호환 가능성, 미확인).
 
-`server.py`는 `GSABIS_MCP_TRANSPORT`가 `streamable-http`(또는 `http`)면 `GSABIS_MCP_HOST`·`GSABIS_MCP_PORT`로 HTTP를 열고, 없으면 stdio로 동작한다. 데몬이 이 값을 넣는다.
+`server.py`는 `HARNESS_MCP_TRANSPORT`가 `streamable-http`(또는 `http`)면 `HARNESS_MCP_HOST`·`HARNESS_MCP_PORT`로 HTTP를 열고, 없으면 stdio로 동작한다. 데몬이 이 값을 넣는다.
 
 ## 도구 (읽기만)
 
@@ -128,7 +128,7 @@ python .agents/mcp-servers/ftp/smoke_test.py
 
 ## 활성화
 
-1. `python .agents/mcp-servers/singleton/daemon.py start` → `status`에서 `running: true`
+1. `python .agents/mcp-servers/daemon/daemon.py start` → `status`에서 `running: true`
 2. MCP 등록 후 Cursor MCP Reload 또는 Claude Code `/mcp`
 3. 서버 이름이 Running인지 확인
 4. 스모크 실행

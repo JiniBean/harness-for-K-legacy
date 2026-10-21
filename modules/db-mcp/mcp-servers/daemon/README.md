@@ -1,11 +1,11 @@
-# MCP 공유 서버 (singleton)
+# MCP 공유 서버 (daemon)
 
 DB MCP(`db-<env>`)와 ftp(`<프로젝트>-ftp`)를 세션마다 stdio로 띄우지 않고, 내 PC에 서버별 프로세스 1개씩만 띄워 Claude Code·Cursor·Codex가 `url`로 같이 쓴다.
 
 ## 구성
 
 ```text
-.agents/mcp-servers/singleton/
+.agents/mcp-servers/daemon/
 ├─ daemon.py              start|status|stop|restart [--only <이름>]
 ├─ ports.json             set-up-harness가 ports.example.json으로 만든다
 ├─ ports.example.json
@@ -14,7 +14,7 @@ DB MCP(`db-<env>`)와 ftp(`<프로젝트>-ftp`)를 세션마다 stdio로 띄우�
 └─ state/
 ```
 
-소유: **db-mcp**를 켰으면 이 모듈의 singleton만 설치. db-mcp 없이 원격 로그만이면 log-debug singleton. `kind` 필드 없음 — ftp는 `servers`에 `script`만 추가.
+소유: **db-mcp**를 켰으면 이 모듈의 daemon만 설치. db-mcp 없이 원격 로그만이면 log-debug daemon. `kind` 필드 없음 — ftp는 `servers`에 `script`만 추가.
 
 ## ports.json
 
@@ -28,7 +28,7 @@ DB MCP(`db-<env>`)와 ftp(`<프로젝트>-ftp`)를 세션마다 stdio로 띄우�
 | `wait_sec` | 기동 대기(기본 15). JVM 어댑터는 45 |
 | `disabled` | `true`면 start 생략 |
 
-서버는 `GSABIS_MCP_HOST`·`GSABIS_MCP_PORT`·`GSABIS_MCP_TRANSPORT=streamable-http`를 받아 HTTP로 연다. 없으면 stdio.
+서버는 `HARNESS_MCP_HOST`·`HARNESS_MCP_PORT`·`HARNESS_MCP_TRANSPORT=streamable-http`를 받아 HTTP로 연다. 없으면 stdio.
 
 ## MCP 등록
 
@@ -46,10 +46,10 @@ db-mcp 훅은 Cursor url 요청을 `ports.json` 포트로 `db-<env>`에 연결�
 ## 쓰는 법
 
 ```text
-python .agents/mcp-servers/singleton/daemon.py start
-python .agents/mcp-servers/singleton/daemon.py status
-python .agents/mcp-servers/singleton/daemon.py stop
-python .agents/mcp-servers/singleton/smoke_http.py http://127.0.0.1:18761/mcp
+python .agents/mcp-servers/daemon/daemon.py start
+python .agents/mcp-servers/daemon/daemon.py status
+python .agents/mcp-servers/daemon/daemon.py stop
+python .agents/mcp-servers/daemon/smoke_http.py http://127.0.0.1:18761/mcp
 ```
 
 로그온 자동 시작은 선택(시작프로그램 `.lnk` → pythonw + `daemon.py start`). JVM 어댑터는 로그온 직후 최대 45초 걸릴 수 있다.

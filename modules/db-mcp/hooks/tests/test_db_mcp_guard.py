@@ -28,7 +28,7 @@ def _build():
         'session_envs = ["dev"]\nprod_envs = ["kr"]\n',
         encoding="utf-8",
     )
-    s = root / ".agents" / "mcp-servers" / "singleton"
+    s = root / ".agents" / "mcp-servers" / "daemon"
     s.mkdir(parents=True)
     (s / "ports.json").write_text(
         json.dumps(
@@ -44,7 +44,7 @@ def _build():
         encoding="utf-8",
     )
     # installed layout: hooks next to mcp-servers under .agents
-    # guard looks ../mcp-servers/singleton from hooks — so put mcp-servers under .agents
+    # guard looks ../mcp-servers/daemon from hooks — so put mcp-servers under .agents
     return root
 
 
@@ -100,10 +100,10 @@ def run(root, payload):
 
 
 def main():
-    # Patch guard ports path: installed copy uses hooks under .agents/hooks and singleton under .agents/mcp-servers/singleton
+    # Patch guard ports path: installed copy uses hooks under .agents/hooks and daemon under .agents/mcp-servers/daemon
     # Source guard uses ../mcp-servers from hooks dir = .agents/mcp-servers — correct for install layout.
     root = _build()
-    # symlink/copy singleton to where guard expects: hooks/../mcp-servers = .agents/mcp-servers — already there
+    # symlink/copy daemon to where guard expects: hooks/../mcp-servers = .agents/mcp-servers — already there
     fail = 0
     print("== test_db_mcp_guard")
     for label, payload, expect in CASES:

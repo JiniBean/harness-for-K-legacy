@@ -23,7 +23,7 @@ def _session(url):
         "params": {
             "protocolVersion": "2024-11-05",
             "capabilities": {},
-            "clientInfo": {"name": "singleton-smoke", "version": "0.1"},
+            "clientInfo": {"name": "daemon-smoke", "version": "0.1"},
         },
     }
     with httpx.Client(timeout=30.0) as client:

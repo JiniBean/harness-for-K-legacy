@@ -48,7 +48,7 @@ def _payload_blob(payload):
 
 
 def _port_envs():
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "mcp-servers", "singleton", "ports.json")
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "mcp-servers", "daemon", "ports.json")
     try:
         with open(path, encoding="utf-8") as f:
             servers = json.load(f).get("servers") or {}

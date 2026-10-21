@@ -18,7 +18,7 @@ WAS·애플리케이션 로그로 데이터 변경 타임라인과 오류 원인
    - 선택지: 켬 / 끔(내 PC 로그만)
    - 추천: 운영 오류·데이터 문의를 직접 확인하는 업무면 켬
    - 모름/나중에: 끔. 나중에 쓰려면 set-up-harness로 이 기능만 다시 켠다
-   - 끔이면 FTP MCP 서버(`mcp-servers/ftp/server.py`, `smoke_test.py`, `requirements.txt`, `README.md`), MCP 공유 서버(`mcp-servers/singleton/`. 다른 기능이 설치하면 그쪽 `ports.json`의 FTP 항목만 뺀다), FTP 가드 훅(`hooks/ftp_mcp_guard.py`와 그 테스트 `hooks/tests/test_ftp_mcp_guard.py`, `hooks.toml`의 `part = "ftp"` 항목), `mcp.json`의 FTP 항목, `ftp.env`, `[ftp]`·`[guard.ftp]`·`ftp_hosts`를 설치하지 않는다. 로그 스킬, 로그 서브에이전트, 로그 요약기(`mcp-servers/ftp/log_digest.py`, 같은 경로)만 설치한다
+   - 끔이면 FTP MCP 서버(`mcp-servers/ftp/server.py`, `smoke_test.py`, `requirements.txt`, `README.md`), MCP 공유 서버(`mcp-servers/daemon/`. 다른 기능이 설치하면 그쪽 `ports.json`의 FTP 항목만 뺀다), FTP 가드 훅(`hooks/ftp_mcp_guard.py`와 그 테스트 `hooks/tests/test_ftp_mcp_guard.py`, `hooks.toml`의 `part = "ftp"` 항목), `mcp.json`의 FTP 항목, `ftp.env`, `[ftp]`·`[guard.ftp]`·`ftp_hosts`를 설치하지 않는다. 로그 스킬, 로그 서브에이전트, 로그 요약기(`mcp-servers/ftp/log_digest.py`, 같은 경로)만 설치한다
    - 이 기능 전체(로컬 로그 분석 포함)를 쓸지는 3단계 기능 고르기에서 따로 묻는다. 이 질문과 한 질문으로 합치지 않는다
 2. `[처음 쓸 때]` (켬일 때) 서버마다 주소(호스트·포트), 오늘 로그가 쌓이는 폴더, 지난 로그 폴더, 채팅에서 그 서버를 부를 짧은 영문 이름(`alias`)
    - 정하는 것: `[[ftp.servers]]`와 셸 차단 목록 `[guard] ftp_hosts`
@@ -66,7 +66,7 @@ WAS·애플리케이션 로그로 데이터 변경 타임라인과 오류 원인
 - 스킬 `skills/log-debug/SKILL.md` (모드: 운영 로그 / 로컬 로그)
 - 훅 `hooks/ftp_mcp_guard.py` (FTP MCP 읽기 전용)
 - 원격 로그 MCP 서버 `mcp-servers/ftp/` → `.agents/mcp-servers/ftp/` (`server.py`, 요약기 `log_digest.py`, `smoke_test.py`, `requirements.txt`, 설정·줄 형식은 `README.md`)
-- MCP 공유 서버 `mcp-servers/singleton/` → `.agents/mcp-servers/singleton/`. **db-mcp를 켠 경우 singleton은 db-mcp만 설치**하고, 이 모듈은 FTP를 그 `ports.json`에 `script: "../ftp/server.py"`로만 더한다(`kind` 없음). db-mcp가 끄고 원격 로그만 켠 경우에만 이 모듈의 singleton을 설치한다. 로그온 자동 시작은 설치하지 않고 README 「로그온 자동 시작」을 보고에 안내
+- MCP 공유 서버 `mcp-servers/daemon/` → `.agents/mcp-servers/daemon/`. **db-mcp를 켠 경우 daemon은 db-mcp만 설치**하고, 이 모듈은 FTP를 그 `ports.json`에 `script: "../ftp/server.py"`로만 더한다(`kind` 없음). db-mcp가 끄고 원격 로그만 켠 경우에만 이 모듈의 daemon을 설치한다. 로그온 자동 시작은 설치하지 않고 README 「로그온 자동 시작」을 보고에 안내
 - 서브에이전트 `agents/logbot.md` → `.agents/agents/logbot.md`
 - 비밀 파일 `ftp.env`: set-up-harness가 훅 등록 전에 키 이름만 넣은 빈 파일로 만든다(키는 `mcp-servers/ftp/README.md`). 값은 사용자가 넣는다
 

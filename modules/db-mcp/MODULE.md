@@ -47,14 +47,14 @@
 | 항목 | 키 |
 |---|---|
 | 승인·환경 | `[guard.db] approvals`, `session_envs`, `prod_envs`, TTL·건수 |
-| MCP·포트 | `singleton/ports.json`의 `db-<env>`, `.agents/mcp.json` url |
+| MCP·포트 | `daemon/ports.json`의 `db-<env>`, `.agents/mcp.json` url |
 | 어댑터 접속 | 어댑터 모듈의 프로필·드라이버 키 |
 
 ## 포함 파일
 
 - 훅 `hooks/db_mcp_guard.py`, `db_dml_approve.py`, `db_sql_policy.py`, `hooks.toml`
 - 설정 조각 `harness.fragment.toml`
-- MCP 공유 `mcp-servers/singleton/` (db-mcp가 켜져 있으면 이 모듈이 소유. 끄고 원격 로그만이면 log-debug가 소유). ftp는 `ports.json` servers에 `script`만 추가(`kind` 없음)
+- MCP 공유 `mcp-servers/daemon/` (db-mcp가 켜져 있으면 이 모듈이 소유. 끄고 원격 로그만이면 log-debug가 소유). ftp는 `ports.json` servers에 `script`만 추가(`kind` 없음)
 
 ## 설정 키
 

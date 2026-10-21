@@ -176,7 +176,7 @@ MODULE.md 「사용자 안내」의 질문마다 아래 표시가 붙어 있다.
    - 결과는 `[guard] hook_approval`
 5. 하네스 파일(`.agents/`)을 저장소에 넣을지: 이미 VCS 제외 설정이 있으면 그대로 두고 묻지 않는다. 없을 때만 "넣으면 팀원도 같은 규칙을 쓰고, 빼면 내 PC에만 있다"로 묻는다
    - 넣지 않음: `.gitignore`(또는 `svn:ignore`)에 `.agents/`
-   - 넣음: 적어도 `.agents/tmp/`, `.agents/hooks/state/`, `.agents/mcp-servers/singleton/state/`는 제외. `harness.toml`에 내부 서버 주소가 들어가면 그 파일도 제외할지 묻는다
+   - 넣음: 적어도 `.agents/tmp/`, `.agents/hooks/state/`, `.agents/mcp-servers/daemon/state/`는 제외. `harness.toml`에 내부 서버 주소가 들어가면 그 파일도 제외할지 묻는다
 6. 결과는 루트 `AGENTS.md`의 형상관리 절로 간다. 커밋 메시지 형식처럼 여러 스킬이 쓰는 값은 프로젝트 문서나 `harness.toml`로
 
 ## 3. 쓸 기능 고르기
@@ -263,11 +263,11 @@ MODULE.md 「사용자 안내」의 질문마다 아래 표시가 붙어 있다.
    - 켠 기능의 `mcp-servers/<이름>/README.md` 「MCP 등록」대로 `.agents/mcp.json`을 쓴다. 환경별 실행 파일이 필요한 기능(예: tibero `launch_<env>.py`)은 README의 내용으로 환경마다 만든다
    - 로컬 Python MCP 서버(DB·FTP)는 공유 서버(url) 방식으로 등록한다
      - **db-mcp**: 설정 스캔→확인으로 `[guard.db]`를 채운다. MCP 이름 `db-<env>`. 어댑터(tibero 등)가 없으면 hooks만 두고 runnable DB·mcp.json `db-*`·ports `db-*`는 만들지 않는다
-     - `singleton/` 폴더는 한 기능에서만 복사한다. 우선순위 db-mcp > log-debug(원격 로그만). MODULE.md 「포함 파일」과 같게
-     - `ports.example.json`을 바탕으로 `.agents/mcp-servers/singleton/ports.json`을 만든다. DB는 `db-<env>`+어댑터 script, FTP는 script만(`kind` 없음). 포트 18761부터, `python`은 venv 절대경로
+     - `daemon/` 폴더는 한 기능에서만 복사한다. 우선순위 db-mcp > log-debug(원격 로그만). MODULE.md 「포함 파일」과 같게
+     - `ports.example.json`을 바탕으로 `.agents/mcp-servers/daemon/ports.json`을 만든다. DB는 `db-<env>`+어댑터 script, FTP는 script만(`kind` 없음). 포트 18761부터, `python`은 venv 절대경로
      - `.agents/mcp.json`에는 같은 이름·포트의 `url` 항목을, `.agents/mcp.stdio.json`에는 README의 stdio 항목을 쓴다(되돌림용)
-     - 의존성 설치 뒤 `python .agents/mcp-servers/singleton/daemon.py start`를 실행한다. 계정 파일이 비어 있으면 그 서버는 기동에 실패한다(`started-port-not-ready`, `state/<이름>.log`). 계정을 채운 뒤 다시 `start`
-     - 로그온 자동 시작(시작프로그램 바로가기)은 만들지 않는다. 7단계 보고 「사용자 할 일」에 singleton README 「로그온 자동 시작」을 안내한다
+     - 의존성 설치 뒤 `python .agents/mcp-servers/daemon/daemon.py start`를 실행한다. 계정 파일이 비어 있으면 그 서버는 기동에 실패한다(`started-port-not-ready`, `state/<이름>.log`). 계정을 채운 뒤 다시 `start`
+     - 로그온 자동 시작(시작프로그램 바로가기)은 만들지 않는다. 7단계 보고 「사용자 할 일」에 daemon README 「로그온 자동 시작」을 안내한다
    - 켠 기능의 `*.env.example`마다 `<secrets_dir>/<name>/<이름>.env`를 만든다. 내용은 키만 있고 값은 비운다. 파일이 이미 있으면 건드리지 않는다. 다시 맞춤에서 훅이 이 폴더를 막으면 경로와 키 목록을 보여 주고 사용자가 만든다
    - MCP 서버가 쓰는 Python 패키지를 `[tools] python`으로 설치한다(`-m pip install -r <requirements.txt>`). 설치 전에 무엇을 설치하는지 알리고 확인받는다
 7. 훅 등록. `[tools] python`이 비어 있으면 Python 경로를 찾아 보여 주고 확인받아 전역 `harness.toml`에 쓴다. 이 시점부터 가드가 켜진다
@@ -302,6 +302,6 @@ MODULE.md 「사용자 안내」의 질문마다 아래 표시가 붙어 있다.
 4. 사용자가 할 일(번호 목록). 항목마다 왜 하는지 → 어디서 → 무엇을. 예:
    - DB 계정 넣기: 에이전트가 DB를 조회하려면 계정이 필요하다 → `<파일 경로>`를 메모장으로 열기 → `=` 뒤에 계정·비밀번호를 적고 저장
    - DB·로그 연결 다시 읽기: 새로 만든 연결을 도구가 읽게 한다 → Cursor는 Settings → MCP에서 새로고침, Claude Code는 채팅에 `/mcp`
-   - DB·로그 서버 켜기: 재부팅하면 공유 서버가 꺼져 연결이 실패한다 → 터미널에서 `python .agents/mcp-servers/singleton/daemon.py start`. 매번 하기 싫으면 `.agents/mcp-servers/singleton/README.md` 「로그온 자동 시작」대로 시작프로그램 바로가기를 만든다
+   - DB·로그 서버 켜기: 재부팅하면 공유 서버가 꺼져 연결이 실패한다 → 터미널에서 `python .agents/mcp-servers/daemon/daemon.py start`. 매번 하기 싫으면 `.agents/mcp-servers/daemon/README.md` 「로그온 자동 시작」대로 시작프로그램 바로가기를 만든다
    - Codex를 쓰면 채팅에 `/hooks`를 입력해 새 훅을 허용
    - Cursor를 쓰고 전역 지시를 처음 깔았으면 `~/.agents/AGENTS.md` 내용을 Settings → Rules → User Rules에 붙여 넣기

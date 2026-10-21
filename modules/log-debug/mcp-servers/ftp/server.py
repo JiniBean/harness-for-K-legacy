@@ -42,11 +42,11 @@ DEFAULT_PORT = 21
 _CFG = harness_config.load(PROJECT_ROOT)
 SERVER_NAME = str(((_CFG.get("guard") or {}).get("ftp") or {}).get("server_name") or "ftp")
 
-# Singleton daemon (mcp-servers/singleton) sets GSABIS_MCP_HOST/PORT/TRANSPORT; unset = stdio.
+# Daemon (mcp-servers/daemon) sets HARNESS_MCP_HOST/PORT/TRANSPORT; unset = stdio.
 mcp = FastMCP(
     SERVER_NAME,
-    host=os.environ.get("GSABIS_MCP_HOST", "127.0.0.1"),
-    port=int(os.environ.get("GSABIS_MCP_PORT", "8000")),
+    host=os.environ.get("HARNESS_MCP_HOST", "127.0.0.1"),
+    port=int(os.environ.get("HARNESS_MCP_PORT", "8000")),
 )
 
 
@@ -470,7 +470,7 @@ def ftp_slice(
 
 if __name__ == "__main__":
     # stdio (default) | streamable-http | sse
-    _transport = (os.environ.get("GSABIS_MCP_TRANSPORT") or "stdio").strip().lower()
+    _transport = (os.environ.get("HARNESS_MCP_TRANSPORT") or "stdio").strip().lower()
     if _transport == "stdio":
         mcp.run()
     else:

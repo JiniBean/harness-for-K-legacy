@@ -134,13 +134,13 @@
 - MCP 서버 스크립트는 `<위치>/mcp-servers/<이름>/`에 둔다. 경로는 `__file__` 기준으로 계산한다
 - MCP 서버가 실행 중이면 그 venv·파일이 잠겨 옮길 수 없다. 세션을 재시작한 뒤 옮긴다
 
-#### 프로젝트 MCP 공유 서버 (singleton)
+#### 프로젝트 MCP 공유 서버 (daemon)
 
-로컬 Python MCP 서버(DB·FTP)는 stdio로 등록하면 세션마다 프로세스가 생긴다. 공유 서버는 서버별 프로세스 1개를 `127.0.0.1` HTTP로 띄우고 모든 세션이 `mcp.json`의 `url`로 붙는다. 상세는 `.agents/mcp-servers/singleton/README.md`.
+로컬 Python MCP 서버(DB·FTP)는 stdio로 등록하면 세션마다 프로세스가 생긴다. 공유 서버는 서버별 프로세스 1개를 `127.0.0.1` HTTP로 띄우고 모든 세션이 `mcp.json`의 `url`로 붙는다. 상세는 `.agents/mcp-servers/daemon/README.md`.
 
-- 정본: `.agents/mcp-servers/singleton/ports.json`(서버 이름·포트·실행 파일·Python), `.agents/mcp.json`은 같은 포트의 `url`. stdio 항목은 되돌림용으로 `.agents/mcp.stdio.json`
+- 정본: `.agents/mcp-servers/daemon/ports.json`(서버 이름·포트·실행 파일·Python), `.agents/mcp.json`은 같은 포트의 `url`. stdio 항목은 되돌림용으로 `.agents/mcp.stdio.json`
 - 서버 이름·포트를 바꾸면 `ports.json`과 `mcp.json`을 같이 고친다
-- 기동: `python .agents/mcp-servers/singleton/daemon.py start|status|stop`. `status`의 `running`은 포트가 열려 있다는 뜻이다
+- 기동: `python .agents/mcp-servers/daemon/daemon.py start|status|stop`. `status`의 `running`은 포트가 열려 있다는 뜻이다
 - pythonw(로그온 자동 시작)로 돌린 결과는 `state/last_cmd.json`, 서버별 출력은 `state/<이름>.log`
 - 데몬이 꺼진 채 세션을 열면 연결 실패로 보인다. 데몬을 띄운 뒤 Claude Code `/mcp`, Cursor MCP 화면 토글로 다시 연결한다
 - `state/`는 VCS에서 뺀다

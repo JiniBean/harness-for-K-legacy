@@ -211,7 +211,7 @@ async def _run_stdio():
 
 
 async def _run_streamable_http(host, port):
-    """localhost Streamable HTTP for the shared singleton daemon (mcp-servers/singleton)."""
+    """localhost Streamable HTTP for the shared daemon (mcp-servers/daemon)."""
     import contextlib
     import uvicorn
     from starlette.applications import Starlette
@@ -236,11 +236,11 @@ async def main():
     logger.info('Starting Tibero MCP server...')
     config = get_db_config()
     logger.info('Database config: %s:%s/%s as %s (profile=%s)', config['host'], config['port'], config['sid'], config['user'], get_profile())
-    # Singleton daemon sets GSABIS_MCP_*; unset = stdio (one process per client session)
-    transport = (os.environ.get('GSABIS_MCP_TRANSPORT') or 'stdio').strip().lower()
+    # Daemon sets HARNESS_MCP_*; unset = stdio (one process per client session)
+    transport = (os.environ.get('HARNESS_MCP_TRANSPORT') or 'stdio').strip().lower()
     if transport in ('streamable-http', 'http'):
-        host = os.environ.get('GSABIS_MCP_HOST') or '127.0.0.1'
-        port = int(os.environ.get('GSABIS_MCP_PORT') or '18761')
+        host = os.environ.get('HARNESS_MCP_HOST') or '127.0.0.1'
+        port = int(os.environ.get('HARNESS_MCP_PORT') or '18761')
         logger.info('Transport=streamable-http %s:%s/mcp', host, port)
         await _run_streamable_http(host, port)
     else:

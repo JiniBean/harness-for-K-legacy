@@ -73,7 +73,7 @@ tool_jdk_fallbacks = []
 
 ## 환경별 실행 파일
 
-환경·승인 훅은 **db-mcp**의 `db_mcp_guard.py`가 담당한다(서버 이름 `db-<env>`). Claude/Codex는 `tool_name` `mcp__db-<env>__…`, Cursor는 `mcp_server_name`(`db-<env>` 또는 `project-<n>-<워크스페이스>-db-<env>`), 그다음 url 포트를 `singleton/ports.json`의 `db-*`와 맞춘다. SQL 본문(`tool_input`)은 보지 않는다. 이 어댑터는 환경마다 `launch_<env>.py`를 두어 프로필을 고정한다(인자로 환경만 넘기는 단일 실행기 금지).
+환경·승인 훅은 **db-mcp**의 `db_mcp_guard.py`가 담당한다(서버 이름 `db-<env>`). Claude/Codex는 `tool_name` `mcp__db-<env>__…`, Cursor는 `mcp_server_name`(`db-<env>` 또는 `project-<n>-<워크스페이스>-db-<env>`), 그다음 url 포트를 `daemon/ports.json`의 `db-*`와 맞춘다. SQL 본문(`tool_input`)은 보지 않는다. 이 어댑터는 환경마다 `launch_<env>.py`를 두어 프로필을 고정한다(인자로 환경만 넘기는 단일 실행기 금지).
 
 `launch_<env>.py` 내용(모든 환경이 같다. 환경은 파일 이름에서 읽는다)
 
@@ -86,9 +86,9 @@ set-up-harness는 `[guard.db] approvals`의 키마다 이 파일을 만든다.
 
 ## MCP 등록
 
-기본은 url 방식(공유 서버). 절차·`ports.json`은 db-mcp의 `mcp-servers/singleton/README.md`(설치 후 `.agents/mcp-servers/singleton/`).
+기본은 url 방식(공유 서버). 절차·`ports.json`은 db-mcp의 `mcp-servers/daemon/README.md`(설치 후 `.agents/mcp-servers/daemon/`).
 
-1. `singleton/ports.json`에 환경마다 `"db-<env>": { "port": <포트>, "script": "../tibero/launch_<env>.py", "wait_sec": 45 }`
+1. `daemon/ports.json`에 환경마다 `"db-<env>": { "port": <포트>, "script": "../tibero/launch_<env>.py", "wait_sec": 45 }`
 2. 프로젝트 `.agents/mcp.json`(정본)에 환경마다 하나
 
 ```json
@@ -114,7 +114,7 @@ set-up-harness는 `[guard.db] approvals`의 키마다 이 파일을 만든다.
 
 의존성: `<venv Python> -m pip install -r .agents/mcp-servers/tibero/requirements.txt`. `mcp`는 1.x만 쓴다. url 방식에 필요한 `uvicorn`·`starlette`는 `mcp`가 함께 설치한다.
 
-서버 본체는 `GSABIS_MCP_TRANSPORT`가 `streamable-http`(또는 `http`)면 `GSABIS_MCP_HOST`·`GSABIS_MCP_PORT`로 HTTP를 열고, 없으면 stdio로 동작한다. 데몬이 이 값을 넣는다.
+서버 본체는 `HARNESS_MCP_TRANSPORT`가 `streamable-http`(또는 `http`)면 `HARNESS_MCP_HOST`·`HARNESS_MCP_PORT`로 HTTP를 열고, 없으면 stdio로 동작한다. 데몬이 이 값을 넣는다.
 
 ## 쓰기 정책
 
@@ -126,7 +126,7 @@ set-up-harness는 `[guard.db] approvals`의 키마다 이 파일을 만든다.
 ## 활성화
 
 1. 비밀 파일 확인(사용자)
-2. `python .agents/mcp-servers/singleton/daemon.py start` → `status`에서 `running: true`
+2. `python .agents/mcp-servers/daemon/daemon.py start` → `status`에서 `running: true`
 3. MCP Reload(Cursor) 또는 `/mcp`(Claude Code)
 4. `db-<env>`에서 `SELECT 1 FROM DUAL`
 5. 훅 검사: db-mcp `test_db_mcp_guard.py`, `test_db_dml_policy.py`, `test_dml_prompt.py`

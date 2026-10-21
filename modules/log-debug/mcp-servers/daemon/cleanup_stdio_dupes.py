@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Kill stdio MCP python processes that are NOT singleton port listeners.
+"""Kill stdio MCP python processes that are NOT daemon port listeners.
 
 Keeps PIDs listening on exactly ports.json bind:port (and their venv parent). Kills other
 python.exe whose command line runs one of the ports.json server scripts (left over from

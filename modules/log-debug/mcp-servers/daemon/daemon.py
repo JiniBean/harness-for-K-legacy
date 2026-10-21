@@ -2,7 +2,7 @@
 """Start/stop/status for shared localhost MCP HTTP backends listed in ports.json.
 
 One process per server for every Claude/Cursor session (mcp.json "url" entries) instead of
-one stdio process per session. Servers read GSABIS_MCP_HOST/PORT/TRANSPORT.
+one stdio process per session. Servers read HARNESS_MCP_HOST/PORT/TRANSPORT.
 
   python daemon.py start|status|stop|restart [--only <name>]
 
@@ -179,9 +179,9 @@ def _spawn(name, python, script, bind, port):
     log_f = open(_log_path(name), "ab", buffering=0)
     env = os.environ.copy()
     env.update({
-        "GSABIS_MCP_HOST": bind,
-        "GSABIS_MCP_PORT": str(port),
-        "GSABIS_MCP_TRANSPORT": "streamable-http",
+        "HARNESS_MCP_HOST": bind,
+        "HARNESS_MCP_PORT": str(port),
+        "HARNESS_MCP_TRANSPORT": "streamable-http",
         "PYTHONUNBUFFERED": "1",
     })
     proc = subprocess.Popen(
@@ -277,7 +277,7 @@ def cmd_stop(names, cfg):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="MCP singleton daemon")
+    parser = argparse.ArgumentParser(description="MCP daemon")
     parser.add_argument("action", choices=["status", "start", "stop", "restart"])
     parser.add_argument("--only", action="append", dest="only", help="Limit to server name(s)")
     args = parser.parse_args(argv)
